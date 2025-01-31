@@ -1,0 +1,21 @@
+services:
+  minio:
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.minio.rule=Host(`minio.localhost`)"
+        - "traefik.http.services.minio.loadbalancer.server.port=9001"
+        - "traefik.http.routers.minio.entrypoints=web"
+    hostname: '${MINIO_HOSTNAME}'
+    image: minio/minio
+    container_name: minio
+    restart: always
+    volumes:
+      - .volumes/minio:/data
+    ports:
+      - "9000:9000"
+      # - "9001:9001"
+      # - "37335:37335"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_AWS_ACCESS_KEY_ID:-minio_key}
+      MINIO_ROOT_PASSWORD: ${MINIO_AWS_SECRET_ACCESS_KEY:-minio_secret}
+    command: server /data --console-address ":9001"
