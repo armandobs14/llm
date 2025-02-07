@@ -1,4 +1,16 @@
 services:
+  redis:
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.redis.rule=Host(`redis.localhost`)"
+        - "traefik.http.services.redis.loadbalancer.server.port=6379"
+        - "traefik.http.routers.redis.entrypoints=web"
+    image: redis/redis-stack-server:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - .volumes/redis:/data
   ollama:
     labels:
         - "traefik.enable=true"
